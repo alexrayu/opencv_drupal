@@ -1,0 +1,100 @@
+<?php
+
+/**
+ * @file
+ * Contains opencv.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_help().
+ */
+function opencv_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the opencv module.
+    case 'help.page.opencv':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('OpenCV Test') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ *
+ * {@inheritdoc}
+ */
+function opencv_file_presave(EntityInterface $entity) {
+  opencv_handle_file($entity);
+}
+
+/**
+ * Handle file.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   File entity.
+ */
+function opencv_handle_file(EntityInterface $entity) {
+  $replace_tags = FALSE;
+  if ($entity->hasField('field_tags')) {
+    $values = $entity->field_tags->getValue();
+    if (!empty($values)) {
+      if (!$replace_tags) {
+        return;
+      }
+    }
+  }
+
+  $processed = &drupal_static('opencv');
+  if ($processed) {
+    return;
+  }
+  $processed = TRUE;
+
+  $file_path = \Drupal::service('file_system')->realpath($entity->getFileUri());
+  \Drupal::service('opencv.facefinder')->find($file_path);
+  // \Drupal::service('opencv.facefinder_lbp')->find($file_path);
+  $tags = \Drupal::service('opencv.tagger')->tag($file_path, TRUE);
+  if ($tags) {
+    $ids = [];
+    foreach ($tags as $key => $tag) {
+      $ids[] = opencv_handle_tag($tag);
+    }
+    $entity->set('field_tags', $ids);
+  }
+}
+
+/**
+ * Create term if missing, serve existing otherwise.
+ *
+ * @param string $name
+ *   Term name.
+ *
+ * @return int
+ *   Term id.
+ */
+function opencv_handle_tag($name) {
+  $terms = \Drupal::entityQuery('taxonomy_term')
+    ->condition('name', $name)
+    ->condition('vid', 'tags')
+    ->execute();
+  if (!empty($terms)) {
+    $tid = reset($terms);
+  }
+  if (empty($tid)) {
+    $term = Term::create([
+      'name' => $name,
+      'vid' => 'tags',
+    ]);
+    $term->save();
+    $tid = $term->id();
+  }
+
+  return $tid;
+}

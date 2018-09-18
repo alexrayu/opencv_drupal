@@ -1,0 +1,13 @@
+services:
+  opencv.facefinder:
+    class: Drupal\opencv\FaceFinder
+    arguments: []
+
+  opencv.facefinder_lbp:
+    class: Drupal\opencv\FaceFinderLBP
+    arguments: []
+
+  opencv.tagger:
+    class: Drupal\opencv\Tagger
+    arguments: []
+

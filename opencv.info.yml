@@ -1,0 +1,5 @@
+name: OpenCV
+type: module
+description: OpenCV Test
+core: 8.x
+package: Custom
