@@ -14,6 +14,23 @@ use Drupal\Core\Extension\ExtensionPathResolver;
 class FaceFinderLBP {
 
   /**
+   * The extension path resolver.
+   *
+   * @var \Drupal\Core\Extension\ExtensionPathResolver
+   */
+  protected $extensionPathResolver;
+
+  /**
+   * Sets the extension path resolver.
+   *
+   * @param \Drupal\Core\Extension\ExtensionPathResolver $extension_path_resolver
+   *   The extension path resolver.
+   */
+  public function setExtensionPathResolver(ExtensionPathResolver $extension_path_resolver) {
+    $this->extensionPathResolver = $extension_path_resolver;
+  }
+
+  /**
    * Constructs a new FaceFinder object.
    */
   public function __construct() {
@@ -27,7 +44,8 @@ class FaceFinderLBP {
    *   Image path.
    */
   public function find($image_path) {
-    $module_path = ExtensionPathResolver::getPath('module', 'opencv');
+    $module_path = $this->setExtensionPathResolver;
+
     $src = imread($image_path);
 
     $gray = cvtColor($src, COLOR_BGR2GRAY);

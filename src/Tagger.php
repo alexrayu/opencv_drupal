@@ -15,6 +15,23 @@ use Drupal\Core\Extension\ExtensionPathResolver;
 class Tagger {
 
   /**
+   * The extension path resolver.
+   *
+   * @var \Drupal\Core\Extension\ExtensionPathResolver
+   */
+  protected $extensionPathResolver;
+
+  /**
+   * Sets the extension path resolver.
+   *
+   * @param \Drupal\Core\Extension\ExtensionPathResolver $extension_path_resolver
+   *   The extension path resolver.
+   */
+  public function setExtensionPathResolver(ExtensionPathResolver $extension_path_resolver) {
+    $this->extensionPathResolver = $extension_path_resolver;
+  }
+
+  /**
    * Constructs a new Tagger object.
    */
   public function __construct() {
@@ -34,7 +51,9 @@ class Tagger {
    */
   public function tag($image_path, $draw = FALSE) {
     $tags = [];
-    $module_path = ExtensionPathResolver::getPath('module', 'opencv');
+
+    $module_path = $this->setExtensionPathResolver;
+
     $categories = explode("\n", file_get_contents($module_path . '/models/ssdlite_mobilenet_v2_coco/classes.txt'));
     $src = imread($image_path);
     $blob = blobFromImage($src, 0.017, new Size(300, 300), new Scalar(127.5, 127.5, 127.5), TRUE, FALSE);
