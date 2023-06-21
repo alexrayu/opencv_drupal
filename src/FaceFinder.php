@@ -6,6 +6,7 @@ use CV\Scalar;
 use CV\Size;
 use function CV\{imread, rectangle, imwrite};
 use function CV\DNN\{blobFromImage, readNetFromCaffe};
+use Drupal\Core\Extension\ExtensionPathResolver;
 
 /**
  * Class FaceFinder.
@@ -26,7 +27,7 @@ class FaceFinder {
    *   Image path.
    */
   public function find($image_path) {
-    $module_path = drupal_get_path('module', 'opencv');
+    $module_path = ExtensionPathResolver::getPath('module', 'opencv');
     $src = imread($image_path);
     $blob = blobFromImage($src, 1, new Size(), new Scalar(104, 177, 123),
       TRUE, FALSE);

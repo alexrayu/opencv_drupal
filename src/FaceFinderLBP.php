@@ -6,6 +6,7 @@ use CV\Scalar;
 use function CV\{imread, imwrite, circle, cvtColor, equalizeHist};
 use CV\CascadeClassifier, CV\Face\FacemarkLBF;
 use const CV\{COLOR_BGR2GRAY};
+use Drupal\Core\Extension\ExtensionPathResolver;
 
 /**
  * Class FaceFinder.
@@ -26,7 +27,7 @@ class FaceFinderLBP {
    *   Image path.
    */
   public function find($image_path) {
-    $module_path = drupal_get_path('module', 'opencv');
+    $module_path = ExtensionPathResolver::getPath('module', 'opencv');
     $src = imread($image_path);
 
     $gray = cvtColor($src, COLOR_BGR2GRAY);

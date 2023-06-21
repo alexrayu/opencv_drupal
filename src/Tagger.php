@@ -7,6 +7,7 @@ use CV\Size;
 use CV\Point;
 use function CV\{imread, rectangle, putText, imwrite};
 use function CV\DNN\{blobFromImage, readNetFromTensorflow};
+use Drupal\Core\Extension\ExtensionPathResolver;
 
 /**
  * Class Tagger.
@@ -33,7 +34,7 @@ class Tagger {
    */
   public function tag($image_path, $draw = FALSE) {
     $tags = [];
-    $module_path = drupal_get_path('module', 'opencv');
+    $module_path = ExtensionPathResolver::getPath('module', 'opencv');
     $categories = explode("\n", file_get_contents($module_path . '/models/ssdlite_mobilenet_v2_coco/classes.txt'));
     $src = imread($image_path);
     $blob = blobFromImage($src, 0.017, new Size(300, 300), new Scalar(127.5, 127.5, 127.5), TRUE, FALSE);
