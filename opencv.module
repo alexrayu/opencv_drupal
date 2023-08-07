@@ -80,21 +80,21 @@ function opencv_handle_file(EntityInterface $entity) {
  *   Term id.
  */
 function opencv_handle_tag($name) {
-  $terms = \Drupal::entityQuery('taxonomy_term')
-    ->condition('name', $name)
-    ->condition('vid', 'tags')
-    ->execute();
-  if (!empty($terms)) {
-    $tid = reset($terms);
-  }
-  if (empty($tid)) {
-    $term = Term::create([
-      'name' => $name,
-      'vid' => 'tags',
-    ]);
-    $term->save();
-    $tid = $term->id();
-  }
+  // $terms = \Drupal::entityQuery('taxonomy_term')
+  //   ->condition('name', $name)
+  //   ->condition('vid', 'tags')
+  //   ->execute();
+  // if (!empty($terms)) {
+  //   $tid = reset($terms);
+  // }
+  // if (empty($tid)) {
+  //   $term = Term::create([
+  //     'name' => $name,
+  //     'vid' => 'tags',
+  //   ]);
+  //   $term->save();
+  //   $tid = $term->id();
+  // }
 
-  return $tid;
+  // return $tid;
 }
